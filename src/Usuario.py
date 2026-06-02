@@ -7,4 +7,4 @@ class Usuario:
         self.nombre = nombre
         self.sueldo = sueldo
         
-        Usuario.bd_temp.append(dni)
+        Usuario.bd_temp.append(self.dni)
