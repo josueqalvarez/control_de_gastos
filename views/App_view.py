@@ -1,11 +1,12 @@
 from views import Utilities
+from utilities import menu_principal
 
 
 # Menu principal
 def menu_principal():
     var = Utilities.opciones(
         "\n=== Control de Gastos ===",
-        ["1. Registrar gasto", "2. Ver gastos", "3. Ver resumen por area"],
+        [opcion for opcion in menu_principal],
     )
 
     return var

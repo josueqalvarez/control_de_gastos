@@ -29,7 +29,7 @@ def _elegir_area_y_subarea():
     # Validamos el AREA =======================
     if len(Areas.Area.areas) == 0:
         App_view.faltan_areas("areas")
-        return 0
+        return None, None
 
     area_elegida_nombre = App_view.escoger_opciones(
         [area.nombre for area in Areas.Area.areas],  
@@ -41,7 +41,7 @@ def _elegir_area_y_subarea():
     
     if len(subareas_correspondientes) == 0:
         App_view.faltan_areas("subareas")
-        return 0
+        return None, None
     
     subarea_nombre = App_view.escoger_opciones(
         subareas_correspondientes,
