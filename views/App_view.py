@@ -1,30 +1,4 @@
 from views import Utilities
-from utilities import menu_principal, menu_areas, menu_usuarios
-
-
-# Menu principal
-def menu_principal():
-    var = Utilities.opciones(
-        "\n=== Control de Gastos ===",
-        [opcion for opcion in menu_principal],
-    )
-
-    return var
-
-def areas():
-    var = Utilites.opciones(
-        "\n=== Aress ===",                      
-        [opcion for opcion in menu_areas],
-        )
-
-    return var
-
-def areas():
-    var = Utilites.opciones(
-            "\n=== Usuarios ===",
-            [opcion for opcion in menu_usuarios],
-            )                                   
-    return var
 
 
 # Utilizado para area y subarea
