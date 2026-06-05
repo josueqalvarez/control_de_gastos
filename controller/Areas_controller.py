@@ -1,22 +1,31 @@
-from views.Menu_view import mostrar_menu
-from models import Areas
+from controller.navegacion import navegacion_regresar
+from views.Utilities import mostrar_menu
+from models.Areas import Area, Subarea
+from views import Areas_view
+
 
 def ver_areas():
 
-    return # lista de areas
+    Areas_view.ver_areas()
+    navegacion_regresar()
+
+
 
 
 def ver_subareas():
     
-    areas = mostrar_menu("Elegir area", Areas.Area.areas)
+    area = mostrar_menu("Elige el area para ver sus subareas", Area.areas, "No hay areas registradas")
 
-    return # lista de subareas
+    Areas_view.ver_subareas(area)
+
+    navegacion_regresar()
+
 
 
 def ver_subareas_detalle():
 
-    areas = mostrar_menu("Elegir area", Areas.Area.areas)
-    subarea = mostrar_menu("Elegir subarea", Areas.Subarea.subareas)
+    areas = mostrar_menu("Elegir area", Area.areas)
+    subarea = mostrar_menu("Elegir subarea", Subarea.subareas)
 
     pass
 

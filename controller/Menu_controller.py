@@ -1,6 +1,4 @@
-from models.Menu import Menu
-from views.Menu_view import mostrar_menu
-from controller import Registro_controller, Areas_controller
+from controller import Registro_controller, Areas_controller, navegacion
 import sys
 
 
@@ -15,7 +13,11 @@ def menu_principal(usuario_activo):
         sys.exit,
     ]
 
-    _proceso(opciones, opciones_accion, "Control de Gastos")
+    # Agregamos el menu principal a la navegacion por primera vez
+    if len(navegacion.navegacion) == 0:
+        navegacion.navegacion.append(menu_principal)
+
+    navegacion.navegacion_adelante(opciones, opciones_accion, "Control de Gastos")
 
 
 
@@ -34,18 +36,11 @@ def menu_areas():
         Areas_controller.ver_subareas_detalle,
         Areas_controller.agregar_area,
         Areas_controller.agregar_subarea,
-        sys.exit,
+        navegacion.navegacion_regresar,
     ]
 
-    _proceso(areas, areas_accion, "Areas")
+    navegacion.navegacion_adelante(areas, areas_accion, "Areas")
 
 
 
 
-def _proceso(opciones: list, opciones_accion: list, titulo: str):
-
-    opcion_seleccionada = mostrar_menu(titulo, opciones)
-
-    for indice, valor in enumerate(opciones):
-        if valor == opcion_seleccionada:
-            opciones_accion[indice]()

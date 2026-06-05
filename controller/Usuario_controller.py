@@ -1,7 +1,6 @@
 from models.Usuario import Usuario
 from views import App_view
 
-
 def seleccionar_usuario():
 
     # Validamos el USUARIO =======================
