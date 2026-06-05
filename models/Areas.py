@@ -1,5 +1,5 @@
 from InquirerPy import inquirer
-
+from views import utilities_view
 
 class Area:
 
@@ -43,6 +43,9 @@ class Area:
         Area.areas.append(nueva_area)
         Area.areas_cantidad += 1
 
+        return nueva_area
+
+
 
 
 class Subarea:
@@ -53,6 +56,9 @@ class Subarea:
         self.nombre = nombre
         self.area = area
 
+    def __str__(self):
+        print(f"Nombre del subarea: {self.nombre}")
+        print(f"Area a la que pertenece: {self.area}")
 
     @classmethod
     def atributos(cls):
@@ -63,21 +69,14 @@ class Subarea:
     @staticmethod
     def agregar():
         
-        if len(Area.areas) > 0:
-            area = inquirer.select(
-                message ="Selecciona una area:",
-                choices = [
-                    area.nombre for area in Area.areas
-                    ]
-            ).execute()
-            
-            nombre = input("Ingresa el nombre del subarea: ")
+        area = utilities_view.mostrar_menu(
+            "Selecciona una area:", [area.nombre for area in Area.areas]
+            )
+                    
+        nombre = input("Ingresa el nombre del subarea: ")
 
-            nueva_subarea = Subarea(nombre, area)
-            Subarea.subareas.append(nueva_subarea)
+        nueva_subarea = Subarea(nombre, area)
+        Subarea.subareas.append(nueva_subarea)
 
-        else:
-            print("No hay áreas existentes")
+        return nueva_subarea
 
-
-        return

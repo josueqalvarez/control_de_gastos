@@ -1,9 +1,9 @@
-from views import Utilities
+from views import utilities_view
 
 
 # Utilizado para area y subarea
 def escoger_opciones(lista_areas, mensaje_selecciona):
-    return Utilities.opciones(mensaje_selecciona, lista_areas)
+    return utilities_view.opciones(mensaje_selecciona, lista_areas)
 
 
 def faltan_areas(area):

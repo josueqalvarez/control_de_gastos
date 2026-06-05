@@ -1,5 +1,5 @@
-from controller.navegacion import navegacion_regresar
-from views.Utilities import mostrar_menu
+from controller.navegacion_controller import navegacion_regresar
+from views.utilities_view import mostrar_menu
 from models.Areas import Area, Subarea
 from views import Areas_view
 
@@ -14,9 +14,15 @@ def ver_areas():
 
 def ver_subareas():
     
-    area = mostrar_menu("Elige el area para ver sus subareas", Area.areas, "No hay areas registradas")
+    area = mostrar_menu(
+        "Elige el area para ver sus subareas", 
+        [area.nombre for area in Area.areas])
 
-    Areas_view.ver_subareas(area)
+    for indice, valor in enumerate(Area.areas):
+        if valor.nombre == area:
+            area_elegida = valor
+
+    Areas_view.ver_subareas(area_elegida)
 
     navegacion_regresar()
 
@@ -24,13 +30,32 @@ def ver_subareas():
 
 def ver_subareas_detalle():
 
-    areas = mostrar_menu("Elegir area", Area.areas)
-    subarea = mostrar_menu("Elegir subarea", Subarea.subareas)
+    area = mostrar_menu(
+        "Elige el area:", 
+        [area.nombre for area in Area.areas])
 
-    pass
+    for indice, valor in enumerate(Area.areas):
+        if valor.nombre == area:
+            area_elegida = valor
+
+    print(f"{area_elegida.nombre} --------------" )
+    subarea_elegida = mostrar_menu(
+        "Elegir subarea a ver detalle", 
+        [subarea.nombre for subarea in Subarea.subareas if subarea.area == area_elegida.nombre])
+
+    for indice, valor in enumerate(Subarea.subareas):
+        if valor.nombre == subarea_elegida:
+            subarea_elegida = valor
+    
+    navegacion_regresar()
+
+
+    subarea_elegida.__str__()
 
 def agregar_area():
-    pass
+    nueva_area = Area.agregar()
+    navegacion_regresar(f"Nueva area '{nueva_area.nombre}' agregada")
 
 def agregar_subarea():
-    pass
+    nueva_subarea = Subarea.agregar()
+    navegacion_regresar(f"Nueva subarea '{nueva_subarea.nombre}' agregada")
