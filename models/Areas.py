@@ -1,4 +1,3 @@
-from InquirerPy import inquirer
 from views import utilities_view
 
 class Area:

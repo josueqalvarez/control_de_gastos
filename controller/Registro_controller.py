@@ -1,18 +1,17 @@
-from views import App_view
+from views import App_view, Registro_view
 from models import Areas, Registro, Periodo
 
-def registrar_gasto(usuario):
+def registrar_gasto():
 
     area, subarea = _elegir_area_y_subarea()
     if area is None or subarea is None:
-        print("No se pudo registrar el gasto debido a la falta de areas o subareas.")
         return
     monto = _calculamos_gasto(area)
     fecha = Periodo().id_periodo
     notas = input("Ingrese notas adicionales (opcional): ")
 
-    Registro.registrar_agregar(subarea, monto, fecha, usuario, notas)
-
+    Registro.registrar_agregar(subarea, monto, fecha, Registro.usuario_activo, notas)
+    Registro_view.estado_registro('exitoso')
 
 def _calculamos_gasto(area):
     
@@ -54,3 +53,8 @@ def _elegir_area_y_subarea():
 
 
     return area, subarea
+
+
+def ultimos_gastos():
+    gastos = Registro.obtener_ultimos_gastos()
+    Registro_view.mostrar_ultimos_gastos(gastos)

@@ -1,14 +1,19 @@
-from controller import Registro_controller, Areas_controller, navegacion_controller
+from controller import (
+    Registro_controller,
+    Areas_controller,
+    navegacion_controller as nav,
+)
 from models import navegacion
 import sys
 
 
+# ========================= MENU PRINCIPAL =========================
 def menu_principal(usuario_activo):
 
     opciones = ["1. Registrar gasto", "2. Areas", "3. Usuarios", "4. Salir"]
 
     opciones_accion = [
-        lambda: Registro_controller.registrar_gasto(usuario_activo.dni),
+        menu_registro,
         menu_areas,
         None,
         sys.exit,
@@ -16,12 +21,31 @@ def menu_principal(usuario_activo):
 
     # Agregamos el menu principal a la navegacion por primera vez
     if len(navegacion.navegacion) == 0:
-        navegacion_controller.navegacion.append(menu_principal)
+        nav.navegacion.append(lambda: menu_principal(usuario_activo))
 
-    navegacion_controller.navegacion_adelante(opciones, opciones_accion, "Control de Gastos")
+    nav.navegacion_adelante(opciones, opciones_accion, "Control de Gastos")
 
 
+# ======== REGISTRO ===========
+def menu_registro():
+    opciones = [
+        "1. Registrar gasto",
+        "2. Ver ultimos gastos",
+        "3. Ver resumen actual",
+        "4. Ver resumen por periodo",
+        "5. Atrás",
+    ]
+    opciones_accion = [
+        Registro_controller.registrar_gasto,
+        None,
+        None,
+        lambda: nav.navegacion_regresar("", "si"),
+    ]
 
+    nav.navegacion_adelante(opciones, opciones_accion, "Registro de Gastos")
+
+
+# ======== AREAS ===========
 def menu_areas():
     areas = [
         "1. Ver areas",
@@ -29,7 +53,7 @@ def menu_areas():
         "3. Ver detalle de subarea",
         "4. Agregar area",
         "5. Agregar subarea",
-        "6. Atrás",
+        "Atrás",
     ]
     areas_accion = [
         Areas_controller.ver_areas,
@@ -37,11 +61,7 @@ def menu_areas():
         Areas_controller.ver_subareas_detalle,
         Areas_controller.agregar_area,
         Areas_controller.agregar_subarea,
-        lambda: navegacion_controller.navegacion_regresar("", 'si'),
+        lambda: nav.navegacion_regresar("", "si"),
     ]
 
-    navegacion_controller.navegacion_adelante(areas, areas_accion, "Areas")
-
-
-
-
+    nav.navegacion_adelante(areas, areas_accion, "Areas")

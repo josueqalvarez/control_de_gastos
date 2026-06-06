@@ -47,10 +47,11 @@ def ver_subareas_detalle():
         if valor.nombre == subarea_elegida:
             subarea_elegida = valor
     
+    subarea_elegida.__str__()
+
     navegacion_regresar()
 
 
-    subarea_elegida.__str__()
 
 def agregar_area():
     nueva_area = Area.agregar()

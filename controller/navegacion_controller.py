@@ -15,8 +15,9 @@ def navegacion_adelante(opciones: list, opciones_accion: list, titulo: str):
 
     for indice, valor in enumerate(opciones):
         if valor == opcion_seleccionada:
-            # Agregamos la opcion a la navegacion para poder volver atras
-            navegacion.append(opciones_accion[indice])
+            # Agregamos la opcion a la cola de navegacion para poder volver atras siempre que no sea retroceder
+            if opcion_seleccionada != "Atrás":
+                navegacion.append(opciones_accion[indice])
             
             opciones_accion[indice]()
 

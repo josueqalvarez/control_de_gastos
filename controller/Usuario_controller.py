@@ -32,5 +32,7 @@ def seleccionar_usuario():
         # Solo hay un usuario registrado, se selecciona automáticamente
         usuario_activo = Usuario.bd_temp[0]
 
+    Usuario.usuario_activo = usuario_activo
     print(f"Hola {usuario_activo.nombre}")
+    
     return usuario_activo

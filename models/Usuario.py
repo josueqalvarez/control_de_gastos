@@ -1,6 +1,7 @@
 class Usuario:
 
     bd_temp = []
+    usuario_activo = None
 
     def __init__(self, dni = None, nombre = None, sueldo = None):
         self.dni = dni
@@ -19,4 +20,5 @@ class Usuario:
         nombre = input("Nombre: ")
         sueldo = int(input("Sueldo: "))
 
-        Usuario.bd_temp.append(Usuario(dni, nombre, sueldo))
+        nuevo_usuario = Usuario(dni, nombre, sueldo)
+        Usuario.bd_temp.append(nuevo_usuario)
