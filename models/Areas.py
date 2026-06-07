@@ -1,4 +1,5 @@
-from views import utilities_view
+from database import conexion
+
 
 class Area:
 
@@ -17,65 +18,33 @@ class Area:
         for area in Area.areas:
             print(f" - {area.nombre}: {area.monto_limite}%")
 
-    @staticmethod
-    def agregar():
-        nombre = input("Nombre del area: ")
 
-        nueva_area = Area(nombre, 0)
+def agregar_area(nombre, monto_limite, monto_usado = 0):
 
-        while (True):
-            monto_limite = int(input("Monto limite (ingresa el porcentaje maximo sobre el total de tu sueldo a usar, solo numero): "))
+    conexion.realizar_consulta(
+        """
+        INSERT INTO areas (nombre, monto_limite, monto_usado)
+        VALUES (?, ?, ?)
+        """,
+        (nombre, monto_limite, monto_usado),
+    )
 
-            porcentaje_restante = Area.areas_porcentaje - monto_limite
+def obtener_porcentaje_restante():
+    monto_de_cada_area = conexion.realizar_consulta(
+        """SELECT monto_limite FROM areas"""
+    )
+    monto_restante = 100 - sum(monto_de_cada_area)
 
-            if porcentaje_restante >= 0:
-                Area.areas_porcentaje = porcentaje_restante
-                break
-            else:
-                print(f"El porcentaje ingresado excede al sobrante, solo queda {Area.areas_porcentaje}%")
-                print("Las areas actuales son:")
-                for area in Area.areas:
-                    print(f" - {area.nombre}: {area.monto_limite}%")
+    # Retorna un decimal
+    return monto_restante
 
-        nueva_area.monto_limite = monto_limite
+def obtener_areas():
+    return conexion.realizar_consulta(
+        """SELECT * FROM areas"""
+    )
 
-        Area.areas.append(nueva_area)
-        Area.areas_cantidad += 1
-
-        return nueva_area
-
-
-
-
-class Subarea:
-
-    subareas = []
-
-    def __init__(self, nombre, area):
-        self.nombre = nombre
-        self.area = area
-
-    def __str__(self):
-        print(f"Nombre del subarea: {self.nombre}")
-        print(f"Area a la que pertenece: {self.area}")
-
-    @classmethod
-    def atributos(cls):
-        print(f"Subareas actuales: ({len(Subarea.subareas)}):")
-        for subarea in Subarea.subareas:
-            print(f" - {subarea.nombre} (Area: {subarea.area})")    
-
-    @staticmethod
-    def agregar():
-        
-        area = utilities_view.mostrar_menu(
-            "Selecciona una area:", [area.nombre for area in Area.areas]
-            )
-                    
-        nombre = input("Ingresa el nombre del subarea: ")
-
-        nueva_subarea = Subarea(nombre, area)
-        Subarea.subareas.append(nueva_subarea)
-
-        return nueva_subarea
-
+def obtener_areas_por_nombre(nombre):
+    return conexion.realizar_consulta(
+        """SELECT * FROM areas WHERE nombre = (?)""",
+        (nombre)
+    )

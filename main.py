@@ -1,12 +1,13 @@
-from controller import Registro_controller, Usuario_controller, Menu_controller
-from views import App_view
+from controller import  Usuario_controller, Menu_controller
+from database import conexion
 
+conexion.inicializar_bd()
 
 print("=== Bienvenido al control de gastos personales ===\n")
 
 # Seleccionamos el usuario activo (si no hay, se registra el primero)
-usuario_activo = Usuario_controller.seleccionar_usuario()
+Usuario_controller.seleccionar_usuario()
 
 # Menu principal
-Menu_controller.menu_principal (usuario_activo)
+Menu_controller.menu_principal()
 

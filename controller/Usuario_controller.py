@@ -1,38 +1,49 @@
-from models.Usuario import Usuario
-from views import App_view
+from models.Usuario import agregar_usuario, obtener_usuarios, obtener_usuario_por_dni
+from models.utilities import usuario_activo
+from views import App_view, Usuario_view
 
 def seleccionar_usuario():
 
+    usuarios = obtener_usuarios()
+
     # Validamos el USUARIO =======================
-    if len(Usuario.bd_temp) == 0:
+    if len(usuarios) == 0:
 
         # No hay usuarios registrados, se registra el primero
         print("Primero, vamos a registrar tu usuario")
-        Usuario.agregar()
+        
+        nuevo_usuario = agregar_nuevo_usuario()
+        usuario_actual = nuevo_usuario
 
-        usuario_activo = Usuario.bd_temp[0]
-
-    elif len(Usuario.bd_temp) > 1:
+    elif len(usuarios) > 1:
         # Hay varios usuarios registrados, se le pregunta al usuario cual es el suyo
 
-        print("Hay varios usuarios registrados, selecciona uno:")
-
-        usuario_activo_nombre = App_view.escoger_opciones(
-            [usuarios.nombre for usuarios in Usuario.bd_temp],
-            "Selecciona el usuario que realizó el gasto:",
+        usuario = App_view.escoger_opciones(
+            # Volver a usuarios una lista de objetos, para reemplazar en la siguiente linea
+            [f"{usuarios.id_dni} - {usuarios.nombre}" for usuarios in obtener_usuarios()],
+            "Elije tu usuario:",
         )
 
-        usuario_activo = [
-            usuario
-            for usuario in Usuario.bd_temp
-            if usuario.nombre == usuario_activo_nombre
-        ][0]
+        usuario_actual = obtener_usuario_por_dni(usuario[:8])
 
     else:
         # Solo hay un usuario registrado, se selecciona automáticamente
-        usuario_activo = Usuario.bd_temp[0]
+        usuario_actual = obtener_usuarios()[0]
+        print(usuario_actual)
 
-    Usuario.usuario_activo = usuario_activo
-    print(f"Hola {usuario_activo.nombre}")
+    usuario_activo = usuario_actual
+    print(f"Hola {usuario_activo["nombre"]}")
     
-    return usuario_activo
+
+def agregar_nuevo_usuario():
+    while True:
+        dni = Usuario_view.pedir_dni()
+
+        # Consultamos a la bd siesque el dni ya existe
+        if obtener_usuario_por_dni(dni) == False:
+            nombre, sueldo = Usuario_view.pedir_datos_extra()  
+            return agregar_usuario(dni, nombre, sueldo)
+
+
+        else:
+            print("DNI ya existe, intenta de nuevo.")

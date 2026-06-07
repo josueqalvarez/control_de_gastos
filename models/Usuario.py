@@ -1,24 +1,35 @@
+from database import conexion
+
+
 class Usuario:
 
-    bd_temp = []
-    usuario_activo = None
-
-    def __init__(self, dni = None, nombre = None, sueldo = None):
+    def __init__(self, dni=None, nombre=None, sueldo=None):
         self.dni = dni
         self.nombre = nombre
         self.sueldo = sueldo
 
 
-    @staticmethod
-    def agregar():
-        while True:
-            dni = int(input("DNI: "))
-            if dni not in [usuario.dni for usuario in Usuario.bd_temp]:
-                break
-            else:
-                print("DNI ya existe, intenta de nuevo.")
-        nombre = input("Nombre: ")
-        sueldo = int(input("Sueldo: "))
+def agregar_usuario(dni, nombre, sueldo):
 
-        nuevo_usuario = Usuario(dni, nombre, sueldo)
-        Usuario.bd_temp.append(nuevo_usuario)
+    # Agregamos a la bd
+    conexion.realizar_consulta(
+        """ INSERT INTO usuario (id_dni, nombre, sueldo) VALUES (?,?,?) """,
+        (dni, nombre, sueldo),
+    )
+
+    return Usuario(dni, nombre, sueldo)
+
+def obtener_usuarios():
+    return conexion.realizar_consulta("""SELECT * FROM usuario""")
+
+def obtener_usuario_por_dni(dni):
+    # Devuelve un objeto 
+    res = conexion.realizar_consulta(
+        "SELECT * FROM usuario WHERE id_dni = ?",
+        (dni,)
+    )
+
+    if res:
+        return res[0]
+    else:
+        return False 

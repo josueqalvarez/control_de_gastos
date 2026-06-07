@@ -2,13 +2,14 @@ from controller import (
     Registro_controller,
     Areas_controller,
     navegacion_controller as nav,
+    Subareas_controller
 )
 from models import navegacion
 import sys
 
 
 # ========================= MENU PRINCIPAL =========================
-def menu_principal(usuario_activo):
+def menu_principal():
 
     opciones = ["1. Registrar gasto", "2. Areas", "3. Usuarios", "4. Salir"]
 
@@ -21,7 +22,7 @@ def menu_principal(usuario_activo):
 
     # Agregamos el menu principal a la navegacion por primera vez
     if len(navegacion.navegacion) == 0:
-        nav.navegacion.append(lambda: menu_principal(usuario_activo))
+        nav.navegacion.append(menu_principal)
 
     nav.navegacion_adelante(opciones, opciones_accion, "Control de Gastos")
 
@@ -57,10 +58,10 @@ def menu_areas():
     ]
     areas_accion = [
         Areas_controller.ver_areas,
-        Areas_controller.ver_subareas,
-        Areas_controller.ver_subareas_detalle,
+        Subareas_controller.ver_subareas,
+        Subareas_controller.ver_subareas_detalle,
         Areas_controller.agregar_area,
-        Areas_controller.agregar_subarea,
+        Subareas_controller.agregar_subarea,
         lambda: nav.navegacion_regresar("", "si"),
     ]
 

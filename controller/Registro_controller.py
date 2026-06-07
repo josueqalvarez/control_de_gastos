@@ -1,5 +1,5 @@
-from views import App_view, Registro_view
-from models import Areas, Registro, Periodo
+from views import App_view, Registro_view, utilities_view
+from models import Areas, Registro, Periodo, utilities
 
 def registrar_gasto():
 
@@ -10,7 +10,7 @@ def registrar_gasto():
     fecha = Periodo().id_periodo
     notas = input("Ingrese notas adicionales (opcional): ")
 
-    Registro.registrar_agregar(subarea, monto, fecha, Registro.usuario_activo, notas)
+    Registro.registrar_agregar(subarea, monto, fecha, utilities.usuario_activo, notas)
     Registro_view.estado_registro('exitoso')
 
 def _calculamos_gasto(area):
@@ -27,7 +27,7 @@ def _elegir_area_y_subarea():
 
     # Validamos el AREA =======================
     if len(Areas.Area.areas) == 0:
-        App_view.faltan_areas("areas")
+        utilities_view.faltan_datos("areas")
         return None, None
 
     area_elegida_nombre = App_view.escoger_opciones(
@@ -39,7 +39,7 @@ def _elegir_area_y_subarea():
     subareas_correspondientes = [sub.nombre for sub in Areas.Subarea.subareas if sub.area == area_elegida_nombre]
     
     if len(subareas_correspondientes) == 0:
-        App_view.faltan_areas("subareas")
+        utilities_view.faltan_datos("subareas")
         return None, None
     
     subarea_nombre = App_view.escoger_opciones(
