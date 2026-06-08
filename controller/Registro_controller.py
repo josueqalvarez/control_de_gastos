@@ -1,22 +1,25 @@
 from views import App_view, Registro_view, utilities_view
-from models import Areas, Registro, Periodo, utilities
+from models import (Areas, Subareas, Registro, Periodo, utilities)
 
 def registrar_gasto():
 
     area, subarea = _elegir_area_y_subarea()
     if area is None or subarea is None:
+        utilities_view.faltan_datos("AREAS")
         return
+    
     monto = _calculamos_gasto(area)
     fecha = Periodo().id_periodo
-    notas = input("Ingrese notas adicionales (opcional): ")
+    notas = utilities_view.pedir_dato_str("Ingrese notas adicionales (opcional): ")
 
-    Registro.registrar_agregar(subarea, monto, fecha, utilities.usuario_activo, notas)
+    Registro.registrar_agregar(subarea, fecha, utilities.usuario_activo["id_dni"], monto, notas)
     Registro_view.estado_registro('exitoso')
 
 def _calculamos_gasto(area):
     
     while True:
-        monto = int(input("Ingrese monto: "))
+        monto = utilities_view.pedir_dato_int("Ingrese monto: ")
+
         if area.monto_usado + monto <= area.monto_limite:
             area.monto_usado += monto
             return monto
@@ -26,25 +29,34 @@ def _calculamos_gasto(area):
 def _elegir_area_y_subarea():
 
     # Validamos el AREA =======================
-    if len(Areas.Area.areas) == 0:
-        utilities_view.faltan_datos("areas")
+    areas_disponibles = Areas.obtener_areas()
+    
+    if len(areas_disponibles) == 0:
         return None, None
-
-    area_elegida_nombre = App_view.escoger_opciones(
-        [area.nombre for area in Areas.Area.areas],  
-        "Selecciona el area al que deseas registrar:")
+    
+    
+    area_elegida_nombre = utilities_view.opciones(
+        "Selecciona el area de tu gasto:",
+        [area["nombre"] for area in areas_disponibles]
+        )
+    
+    area = Areas.obtener_area_por_nombre(area_elegida_nombre)
     
 
     # Validamos la SUBAREA =======================
+    subareas_disponibles = Subareas.obtener_subareas_por_nombre(area["nombre"])
+    
+    #### HASTA AQUI ME QUEDE
+    
     subareas_correspondientes = [sub.nombre for sub in Areas.Subarea.subareas if sub.area == area_elegida_nombre]
     
     if len(subareas_correspondientes) == 0:
         utilities_view.faltan_datos("subareas")
         return None, None
     
-    subarea_nombre = App_view.escoger_opciones(
-        subareas_correspondientes,
-        "Selecciona la subarea a la que pertenece el gasto:")
+    subarea_nombre = utilities_view.opciones(
+        "Selecciona la subarea a la que pertenece el gasto:",
+        subareas_correspondientes)
     
 
     # Obtenemos los objetos area y subarea a partir de los nombres seleccionados

@@ -2,7 +2,8 @@ from controller import (
     Registro_controller,
     Areas_controller,
     navegacion_controller as nav,
-    Subareas_controller
+    Subareas_controller,
+    Usuario_controller
 )
 from models import navegacion
 import sys
@@ -62,6 +63,26 @@ def menu_areas():
         Subareas_controller.ver_subareas_detalle,
         Areas_controller.agregar_area,
         Subareas_controller.agregar_subarea,
+        lambda: nav.navegacion_regresar("", "si"),
+    ]
+
+    nav.navegacion_adelante(areas, areas_accion, "Areas")
+
+
+# ======== Usuarios ===========
+def menu_usuarios():
+    areas = [
+        "1. Crear usuario",
+        "2. Editar usuario",
+        "3. Eliminar usuario",
+        "4. Cambiar usuario actual",
+        "Atrás",
+    ]
+    areas_accion = [
+        Usuario_controller.crear_usuario,
+        Usuario_controller.editar_usuario,
+        Usuario_controller.eliminar_usuario,
+        Usuario_controller.cambiar_usuario_actual,
         lambda: nav.navegacion_regresar("", "si"),
     ]
 

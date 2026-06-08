@@ -16,34 +16,35 @@ def obtener_subareas():
         """SELECT * FROM subareas"""
     )
 
-def obtener_subarea_por_nombre(nombre):
-    return conexion.realizar_consulta(
+def obtener_subareas_por_nombre(nombre):
+    res = conexion.realizar_consulta(
         """SELECT * FROM subareas WHERE nombre = (?)""",
-        (nombre)
+        (nombre,)
     )
+
+    if len(res) == 1:
+        return res[0]
+    elif len(res) > 1:
+        return res
+    else:
+        return []
 
 def obtener_subarea_por_area_id(area_id):
-    return conexion.realizar_consulta(
+    # Al ser 1 solo item, retorna 1 valor de la lista (1 dict)
+    res = conexion.realizar_consulta(
         """SELECT * FROM subareas WHERE area = (?)""",
-        (area_id)
+        (area_id,)
     )
+    
+    if res:
+        return res[0]
+    else:
+        return []
 
-@staticmethod
-def agregar(nombre, area):
+
+def agregar_subarea(nombre, area_id):
 
     conexion.realizar_consulta(
         """INSERT INTO subareas (nombre, area) VALUES (?, ?)""",
-        (nombre, area)
+        (nombre, area_id)
     )
-
-    return 
-    area = utilities_view.mostrar_menu(
-        "Selecciona una area:", [area.nombre for area in Area.areas]
-    )
-
-    nombre = input("Ingresa el nombre del subarea: ")
-
-    nueva_subarea = Subarea(nombre, area)
-    Subarea.subareas.append(nueva_subarea)
-
-    return nueva_subarea

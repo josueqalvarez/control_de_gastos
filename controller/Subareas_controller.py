@@ -8,15 +8,14 @@ def ver_subareas():
 
     if areas: 
         area_nombre = utilities_view.mostrar_menu(
-            "Elige el area:", 
+            "Elige un area:", 
             [area["nombre"] for area in Areas.obtener_areas()])
-        print ("asdadasdasdadaads", area_nombre, type(area_nombre))
-        area = Areas.obtener_areas_por_nombre(area_nombre)
+        area = Areas.obtener_area_por_nombre(area_nombre)
 
         subareas = Subareas.obtener_subarea_por_area_id(area["id"])
 
         if subareas:
-            Subareas_view.mostrar_subareas(area_nombre, subareas)
+            Subareas_view.mostrar_subareas(area_nombre, [subareas])
         else:
             utilities_view.faltan_datos("SUBAREAS")
 
@@ -51,5 +50,22 @@ def ver_subareas_detalle():
 
 
 def agregar_subarea():
-    nueva_subarea = Subarea.agregar()
-    navegacion_regresar(f"Nueva subarea '{nueva_subarea.nombre}' agregada")
+    areas = Areas.obtener_areas()
+
+    if areas: 
+        area_nombre = utilities_view.mostrar_menu(
+            "Elige un area:", 
+            [area["nombre"] for area in Areas.obtener_areas()])
+        area = Areas.obtener_area_por_nombre(area_nombre)
+
+        nombre = utilities_view.pedir_dato_str("Ingresa el nombre del subarea: ")
+
+        Subareas.agregar_subarea(nombre, area["id"])
+        mensaje_final = f"Nueva subarea '{nombre}' agregada"
+        
+    else:
+        utilities_view.faltan_datos("AREAS")
+        mensaje_final = ""
+
+    nav.navegacion_regresar(mensaje_final)
+

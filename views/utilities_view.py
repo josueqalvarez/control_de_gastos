@@ -26,6 +26,7 @@ def opciones(mensaje:str, arr:list):
 
     return var
 
+
 def faltan_datos(datos):
     print(f"No hay {datos} registradas, por favor registra un {datos} primero.")
 
@@ -36,3 +37,6 @@ def pedir_dato_str(mensaje):
 
 def pedir_dato_int(mensaje):
     return int(input(mensaje))
+
+def mostrar_texto_simple(mensaje):
+    print(mensaje)

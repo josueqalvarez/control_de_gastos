@@ -72,7 +72,7 @@ def inicializar_bd():
             monto_limite REAL NOT NULL,
             monto_usado REAL DEFAULT 0
         )
-            """)
+            """)    
 
     # Subareas
     cursor.execute("""                 
@@ -106,6 +106,7 @@ def inicializar_bd():
         )
             """)
 
+    # Registro
     cursor.execute(""" 
             CREATE TABLE IF NOT EXISTS registros (           
             id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,4 +1,4 @@
-def mostrar_subareas(area, subareas):
+def mostrar_subareas(area, subareas: list):
 
     if subareas:
         print(f"Las subareas de {area} son:")

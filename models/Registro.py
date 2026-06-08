@@ -1,3 +1,4 @@
+from database import conexion
 
 class Registro:
     
@@ -10,9 +11,17 @@ class Registro:
         self.monto = monto
         self.notas = notas
 
-    @staticmethod
-    def registrar_agregar(subarea, monto, fecha, usuario, notas=""):
 
-        Registro.registros.append(Registro(subarea, monto, fecha, usuario.dni, notas))
-        
+def registrar_agregar(subarea, periodo, dni_usuario, monto, notas=""):
+
+    conexion.realizar_consulta(
+        """INSERT INTO 
+            registros (subarea, periodo, dni_usuario, monto, notas) 
+            VALUES (?, ?, ?, ?, ?)
+            """,
+        (subarea, periodo, dni_usuario, monto, notas)
+    )
+
+
+    
 

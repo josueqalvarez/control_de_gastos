@@ -43,8 +43,13 @@ def obtener_areas():
         """SELECT * FROM areas"""
     )
 
-def obtener_areas_por_nombre(nombre):
-    return conexion.realizar_consulta(
+def obtener_area_por_nombre(nombre):
+    res =  conexion.realizar_consulta(
         """SELECT * FROM areas WHERE nombre = (?)""",
         (nombre)
     )
+
+    if res:
+        return res[0]
+    else:
+        return []
