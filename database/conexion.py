@@ -30,8 +30,9 @@ def realizar_consulta(sql, parametros = None):
         cursor.execute(sql)
 
     # Preparamos el resultado
-    try:
-        response = cursor.fetchall()
+    response = cursor.fetchall()
+
+    if response:
         response_list = [list(fila) for fila in response]
 
         # Si se recibe solo 1 valor en cada registro solicitado, DEVOLVERA UNA LISTA CON TODOS LOS VALORES
@@ -45,8 +46,7 @@ def realizar_consulta(sql, parametros = None):
                 for fila in response_list
             ]
 
-
-    except:
+    else:
         res = []
 
     conexion.commit()

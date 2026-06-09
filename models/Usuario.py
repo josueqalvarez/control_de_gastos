@@ -17,7 +17,6 @@ def agregar_usuario(dni, nombre, sueldo):
         (dni, nombre, sueldo),
     )
 
-    return Usuario(dni, nombre, sueldo)
 
 def obtener_usuarios():
     return conexion.realizar_consulta("""SELECT * FROM usuario""")

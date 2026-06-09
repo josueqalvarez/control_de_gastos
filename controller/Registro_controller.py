@@ -1,5 +1,6 @@
 from views import Registro_view, utilities_view
 from models import (Areas, Subareas, Registro, utilities)
+from controller import navegacion_controller as nav
 
 def registrar_gasto():
 
@@ -9,6 +10,16 @@ def registrar_gasto():
         utilities_view.faltan_datos("AREAS")
         return
     
+    # POR ARREGLAR. Los nombres no son PK, por ello es que puede haber mas de 1 ======
+    if type(subarea) == list:
+        if len(subarea) > 1:
+            print("Error, hay mas de 1 subarea llamada igual")
+            return
+        elif len(area) > 1:
+            print("Error, hay mas de 1 subarea llamada igual")
+            return
+    # ================================================================================
+
     # Periodo
     fecha = utilities.periodo_actual_id
     # Usuario
@@ -18,28 +29,35 @@ def registrar_gasto():
     # Notas
     notas = utilities_view.pedir_dato_str("Ingrese notas adicionales (opcional): ")
 
-    Registro.registrar_agregar(subarea["id"], fecha, dni_usuario, gasto, notas)
-    Registro_view.estado_registro('exitoso')
+    # Agregamos el registro
+    Registro.registro_agregar(subarea["id"], fecha, dni_usuario, gasto, notas)
+    # Actualizamos el monto que uso el area en la bd
+    Areas.actualizar_monto_usado(gasto + area["monto_usado"], area["id"])
+    
+    Registro_view.estado_registro('exitoso\n')
+    
+    # Actualizamos el monto que uso el area en la bd
+    utilities_view.mostrar_texto_simple(
+        f"Solo te queda S/ "
+        f" {Registro.obtener_monto_disponible_a_gastar_segun_area(utilities.usuario_activo, area, gasto)} "
+            f"en {(area["nombre"]).upper()} por gastar."
+        )
 
 
 def _calculamos_gasto(area):
 
-    sueldo_usuario = utilities.usuario_activo["sueldo"]
-
-    monto_maximo_a_gastar = (sueldo_usuario * area["monto_limite"])/100
+    monto_maximo_a_gastar = Registro.obtener_monto_maximo_a_gastar_segun_area(utilities.usuario_activo, area)
     
-
     while True:
         
         gasto = utilities_view.pedir_dato_float("Ingresa el monto: ")
 
         if gasto + area["monto_usado"] <= monto_maximo_a_gastar:
-            Areas.actualizar_monto_usado(gasto + area["monto_usado"], area["id"])
             return gasto
-
         else:
             utilities_view.mostrar_texto_simple(
                 f"El monto ingresado excede el limite, solo puedes gastar {monto_maximo_a_gastar - area["monto_usado"]} mas en esta area.")
+            return
 
 
 def _elegir_area_y_subarea():
@@ -59,9 +77,8 @@ def _elegir_area_y_subarea():
         area = Areas.obtener_area_por_nombre(area_elegida_nombre)
     
 
-
         # Validamos la SUBAREA =======================
-        subareas_disponibles = Subareas.obtener_subareas_por_nombre(area["nombre"])
+        subareas_disponibles = Subareas.obtener_subareas_por_area_id(area["id"])
         
         if len(subareas_disponibles) == 0:
             utilities_view.faltan_datos("subareas")
@@ -79,5 +96,8 @@ def _elegir_area_y_subarea():
 
 
 def ultimos_gastos():
-    gastos = Registro.obtener_ultimos_gastos()
-    Registro_view.mostrar_ultimos_gastos(gastos)
+    cantidad = utilities_view.pedir_dato_int("¿Deseas una cantidad especifica? (opcional):")
+    gastos = Registro.obtener_ultimos_gastos(utilities.usuario_activo["id_dni"] ,cantidad)
+
+    Registro_view.mostrar_ultimos_gastos(gastos, cantidad)
+    nav.navegacion_regresar()

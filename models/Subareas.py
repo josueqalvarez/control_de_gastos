@@ -36,7 +36,7 @@ def obtener_subareas_por_area_id(area_id):
         (area_id,)
     )
     
-    if len(res) > 1:
+    if len(res) > 0:
         return res
     else:
         return []

@@ -47,6 +47,7 @@ def obtener_areas():
         """SELECT * FROM areas"""
     )
 
+
 def obtener_area_por_nombre(nombre):
     res =  conexion.realizar_consulta(
         """SELECT * FROM areas WHERE nombre = (?)""",
@@ -57,6 +58,19 @@ def obtener_area_por_nombre(nombre):
         return res[0]
     else:
         return []
+    
+
+def obtener_area_por_id(id_area):
+    res =  conexion.realizar_consulta(
+        """SELECT * FROM areas WHERE id = (?)""",
+        (id_area)
+    )
+
+    if res:
+        return res[0]
+    else:
+        return []
+
 
 def actualizar_monto_usado(nuevo_monto_usado, area_id):
     conexion.realizar_consulta(

@@ -1,5 +1,5 @@
 from models.Usuario import agregar_usuario, obtener_usuarios, obtener_usuario_por_dni
-from models.utilities import usuario_activo
+from models import utilities
 from views import Usuario_view, utilities_view
 
 def seleccionar_usuario():
@@ -12,8 +12,8 @@ def seleccionar_usuario():
         # No hay usuarios registrados, se registra el primero
         print("Primero, vamos a registrar tu usuario")
         
-        nuevo_usuario = crear_usuario()
-        usuario_actual = nuevo_usuario
+        crear_usuario()
+        usuario_actual = obtener_usuarios()[0]
 
     elif len(usuarios) > 1:
         # Hay varios usuarios registrados, se le pregunta al usuario cual es el suyo
@@ -29,10 +29,10 @@ def seleccionar_usuario():
     else:
         # Solo hay un usuario registrado, se selecciona automáticamente
         usuario_actual = obtener_usuarios()[0]
-        print(usuario_actual)
 
-    usuario_activo = usuario_actual
-    print(f"Hola {usuario_activo["nombre"]}")
+    utilities.usuario_activo = usuario_actual
+
+    print(f"Hola {utilities.usuario_activo["nombre"]}")
     
 
 def crear_usuario():
@@ -42,8 +42,8 @@ def crear_usuario():
         # Consultamos a la bd siesque el dni ya existe
         if obtener_usuario_por_dni(dni) == False:
             nombre, sueldo = Usuario_view.pedir_datos_extra()  
-            return agregar_usuario(dni, nombre, sueldo)
-
+            agregar_usuario(dni, nombre, sueldo)
+            break
         else:
             print("DNI ya existe, intenta de nuevo.")
 
