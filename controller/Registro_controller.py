@@ -1,30 +1,46 @@
-from views import App_view, Registro_view, utilities_view
-from models import (Areas, Subareas, Registro, Periodo, utilities)
+from views import Registro_view, utilities_view
+from models import (Areas, Subareas, Registro, utilities)
 
 def registrar_gasto():
 
+    # Area y Subarea
     area, subarea = _elegir_area_y_subarea()
     if area is None or subarea is None:
         utilities_view.faltan_datos("AREAS")
         return
     
-    monto = _calculamos_gasto(area)
-    fecha = Periodo().id_periodo
+    # Periodo
+    fecha = utilities.periodo_actual_id
+    # Usuario
+    dni_usuario = utilities.usuario_activo["id_dni"]
+    # Monto
+    gasto = _calculamos_gasto(area)
+    # Notas
     notas = utilities_view.pedir_dato_str("Ingrese notas adicionales (opcional): ")
 
-    Registro.registrar_agregar(subarea, fecha, utilities.usuario_activo["id_dni"], monto, notas)
+    Registro.registrar_agregar(subarea["id"], fecha, dni_usuario, gasto, notas)
     Registro_view.estado_registro('exitoso')
 
-def _calculamos_gasto(area):
-    
-    while True:
-        monto = utilities_view.pedir_dato_int("Ingrese monto: ")
 
-        if area.monto_usado + monto <= area.monto_limite:
-            area.monto_usado += monto
-            return monto
+def _calculamos_gasto(area):
+
+    sueldo_usuario = utilities.usuario_activo["sueldo"]
+
+    monto_maximo_a_gastar = (sueldo_usuario * area["monto_limite"])/100
+    
+
+    while True:
+        
+        gasto = utilities_view.pedir_dato_float("Ingresa el monto: ")
+
+        if gasto + area["monto_usado"] <= monto_maximo_a_gastar:
+            Areas.actualizar_monto_usado(gasto + area["monto_usado"], area["id"])
+            return gasto
+
         else:
-            App_view.exceso_monto(area)
+            utilities_view.mostrar_texto_simple(
+                f"El monto ingresado excede el limite, solo puedes gastar {monto_maximo_a_gastar - area["monto_usado"]} mas en esta area.")
+
 
 def _elegir_area_y_subarea():
 
@@ -33,38 +49,33 @@ def _elegir_area_y_subarea():
     
     if len(areas_disponibles) == 0:
         return None, None
-    
-    
-    area_elegida_nombre = utilities_view.opciones(
-        "Selecciona el area de tu gasto:",
-        [area["nombre"] for area in areas_disponibles]
-        )
-    
-    area = Areas.obtener_area_por_nombre(area_elegida_nombre)
-    
-
-    # Validamos la SUBAREA =======================
-    subareas_disponibles = Subareas.obtener_subareas_por_nombre(area["nombre"])
-    
-    #### HASTA AQUI ME QUEDE
-    
-    subareas_correspondientes = [sub.nombre for sub in Areas.Subarea.subareas if sub.area == area_elegida_nombre]
-    
-    if len(subareas_correspondientes) == 0:
-        utilities_view.faltan_datos("subareas")
-        return None, None
-    
-    subarea_nombre = utilities_view.opciones(
-        "Selecciona la subarea a la que pertenece el gasto:",
-        subareas_correspondientes)
+    else:        
+        area_elegida_nombre = utilities_view.opciones(
+            "Selecciona el area de tu gasto:",
+            [area["nombre"] for area in areas_disponibles]
+            )
+        
+        # Obtenemos el area elegida
+        area = Areas.obtener_area_por_nombre(area_elegida_nombre)
     
 
-    # Obtenemos los objetos area y subarea a partir de los nombres seleccionados
-    area = [area for area in Areas.Area.areas if area.nombre == area_elegida_nombre][0]
-    subarea = [sub for sub in Areas.Subarea.subareas if sub.nombre == subarea_nombre][0]
 
+        # Validamos la SUBAREA =======================
+        subareas_disponibles = Subareas.obtener_subareas_por_nombre(area["nombre"])
+        
+        if len(subareas_disponibles) == 0:
+            utilities_view.faltan_datos("subareas")
+            return None, None
+        else:
+            subarea_elegida_nombre = utilities_view.opciones(
+                "Selecciona la subarea a la que pertenece el gasto:",
+                [subarea["nombre"] for subarea in subareas_disponibles])
 
-    return area, subarea
+            # Obtenemos el subarea elegida
+            subarea = Subareas.obtener_subareas_por_nombre(subarea_elegida_nombre)
+
+            # Devuelve 2 dict
+            return area, subarea
 
 
 def ultimos_gastos():

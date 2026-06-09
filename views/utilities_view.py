@@ -38,5 +38,8 @@ def pedir_dato_str(mensaje):
 def pedir_dato_int(mensaje):
     return int(input(mensaje))
 
+def pedir_dato_float(mensaje):
+    return float(input(mensaje))
+
 def mostrar_texto_simple(mensaje):
     print(mensaje)

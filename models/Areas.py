@@ -29,6 +29,10 @@ def agregar_area(nombre, monto_limite, monto_usado = 0):
         (nombre, monto_limite, monto_usado),
     )
 
+# Obtener el monto limi
+def obtener_monto_limite():
+    pass
+
 def obtener_porcentaje_restante():
     monto_de_cada_area = conexion.realizar_consulta(
         """SELECT monto_limite FROM areas"""
@@ -53,3 +57,12 @@ def obtener_area_por_nombre(nombre):
         return res[0]
     else:
         return []
+
+def actualizar_monto_usado(nuevo_monto_usado, area_id):
+    conexion.realizar_consulta(
+        """UPDATE areas
+            SET monto_usado = ?
+            WHERE id = ?""",
+            (nuevo_monto_usado, area_id)
+    )
+    

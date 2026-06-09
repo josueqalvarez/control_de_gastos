@@ -29,21 +29,21 @@ def obtener_subareas_por_nombre(nombre):
     else:
         return []
 
-def obtener_subarea_por_area_id(area_id):
+def obtener_subareas_por_area_id(area_id):
     # Al ser 1 solo item, retorna 1 valor de la lista (1 dict)
     res = conexion.realizar_consulta(
         """SELECT * FROM subareas WHERE area = (?)""",
         (area_id,)
     )
     
-    if res:
-        return res[0]
+    if len(res) > 1:
+        return res
     else:
         return []
 
 
 def agregar_subarea(nombre, area_id):
-
+    print(nombre, area_id)
     conexion.realizar_consulta(
         """INSERT INTO subareas (nombre, area) VALUES (?, ?)""",
         (nombre, area_id)

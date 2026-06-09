@@ -12,10 +12,12 @@ def ver_subareas():
             [area["nombre"] for area in Areas.obtener_areas()])
         area = Areas.obtener_area_por_nombre(area_nombre)
 
-        subareas = Subareas.obtener_subarea_por_area_id(area["id"])
+        subareas = Subareas.obtener_subareas_por_area_id(area["id"])
+        if type(subareas) != list: subareas = [subareas]
+
 
         if subareas:
-            Subareas_view.mostrar_subareas(area_nombre, [subareas])
+            Subareas_view.mostrar_subareas(area_nombre, subareas)
         else:
             utilities_view.faltan_datos("SUBAREAS")
 

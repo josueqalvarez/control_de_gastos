@@ -87,6 +87,7 @@ def inicializar_bd():
         )
             """)
 
+    # Periodo
     cursor.execute("""                 
         
         CREATE TABLE IF NOT EXISTS periodo (           
